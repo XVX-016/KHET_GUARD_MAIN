@@ -1,0 +1,105 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.so
+*.egg-info/
+.eggs/
+*.log
+
+# Virtual environments
+.env
+.env.*
+*.env
+venv/
+.venv/
+ENV/
+
+# Notebooks checkpoints
+.ipynb_checkpoints/
+
+# Data and datasets
+/data/
+ml/datasets/
+ml/Indian_bovine_breeds/
+ml/Pest_Dataset/
+ml/plantvillage dataset/
+ml/artifacts/
+
+# Model exports and large artifacts
+model/exports/
+*.npz
+*.npy
+*.pt
+*.pth
+*.pkl
+*.joblib
+*.onnx
+*.tflite
+*.h5
+*.keras
+*.ckpt
+*.pb
+*.bin
+*.tar
+*.tar.gz
+*.gz
+*.zip
+*.7z
+*.xz
+*.bz2
+
+# Training logs and runs
+logs/
+**/logs_*/
+**/runs/
+**/wandb/
+**/tensorboard/
+*.v2
+*.tfevents.*
+
+# Node / JS
+node_modules/
+dist/
+build/
+*.map
+
+# Mobile/React Native sensitive & build artifacts
+apps/mobile/android/
+apps/mobile/ios/
+apps/mobile/*.keystore
+apps/mobile/google-services.json
+
+# Terraform
+.terraform/
+*.tfstate
+*.tfstate.*
+crash.log
+crash.*.log
+
+# Docker
+*.pid
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Misc
+/tmp/
+.cache/
+.mypy_cache/
+.pytype/
+coverage/
+htmlcov/
+.coverage*
+pytest_cache/
+
+# Firebase/Infra secrets
+infra/*.key.json
+infra/*.serviceaccount.json
+
+# Service outputs
+**/artifacts/
+**/outputs/
+**/checkpoints/

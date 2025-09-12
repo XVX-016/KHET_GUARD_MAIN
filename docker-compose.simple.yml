@@ -1,0 +1,47 @@
+version: '3.8'
+
+services:
+  # PostgreSQL Database
+  postgres:
+    image: postgres:15-alpine
+    environment:
+      POSTGRES_DB: khet_guard
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: khet_guard_password
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./database/schema.sql:/docker-entrypoint-initdb.d/01-schema.sql
+      - ./database/seed.sql:/docker-entrypoint-initdb.d/02-seed.sql
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # ML Inference API
+  ml-api:
+    build: .
+    ports:
+      - "8000:8000"
+    environment:
+      - DISEASE_MODEL=/app/ml/artifacts/disease_pest/exports/model.onnx
+      - CATTLE_MODEL=/app/ml/artifacts/cattle/exports/model.onnx
+      - DISEASE_LABELS=/app/ml/artifacts/disease_pest/labels.json
+      - CATTLE_LABELS=/app/ml/artifacts/cattle/labels.json
+      - PESTICIDE_MAP=/app/ml/recommender/pesticide_map.json
+      - DATABASE_URL=postgresql://postgres:khet_guard_password@postgres:5432/khet_guard
+    volumes:
+      - ./ml:/app/ml
+    depends_on:
+      postgres:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+volumes:
+  postgres_data:

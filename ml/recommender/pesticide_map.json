@@ -1,0 +1,14 @@
+{
+  "aphid": {
+    "recommended": ["Imidacloprid 17.8% SL"],
+    "dosage": "0.3ml per L",
+    "safety": "Spray in evening, wear gloves"
+  },
+  "bollworm": {
+    "recommended": ["Spinosad 45% SC"],
+    "dosage": "0.5ml per L",
+    "safety": "Avoid during flowering stage"
+  }
+}
+
+

@@ -1,0 +1,13 @@
+{
+  "name": "khet-guard-react-native",
+  "private": true,
+  "workspaces": [
+    "apps/mobile",
+    "functions"
+  ],
+  "scripts": {
+    "postinstall": "cd functions && npm install || true",
+    "test:functions": "cd functions && npm test",
+    "build:functions": "cd functions && npm run build"
+  }
+}
