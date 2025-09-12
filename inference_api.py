@@ -365,21 +365,48 @@ async def ui_page():
 <head>
   <meta charset=\"utf-8\">
   <meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">
-  <title>Khet Guard - Demo UI</title>
+  <title>Khet Guard</title>
   <style>
-    body { font-family: system-ui, -apple-system, Segoe UI, Roboto, sans-serif; margin: 24px; background: #0f172a; color: #e2e8f0; }
-    h1 { margin-bottom: 4px; }
-    .card { background: #111827; border: 1px solid #1f2937; border-radius: 10px; padding: 16px; margin-bottom: 16px; }
-    .row { display: flex; flex-wrap: wrap; gap: 16px; }
-    .col { flex: 1 1 360px; }
-    button { background: #2563eb; color: white; border: 0; padding: 10px 14px; border-radius: 8px; cursor: pointer; }
-    button:disabled { background: #475569; cursor: default; }
-    input[type=file] { padding: 8px; background: #0b1220; border: 1px solid #1f2937; border-radius: 8px; color: #e2e8f0; }
-    img { max-width: 100%; height: auto; border-radius: 8px; border: 1px solid #1f2937; }
-    pre { white-space: pre-wrap; word-break: break-word; background: #0b1220; padding: 12px; border-radius: 8px; border: 1px solid #1f2937; }
-    a { color: #93c5fd; }
+    :root { --bg:#0b1220; --panel:#0f172a; --panel-2:#111827; --text:#e2e8f0; --muted:#94a3b8; --brand1:#16a34a; --brand2:#f59e0b; --brand3:#22c55e; --accent:#2563eb; }
+    [data-theme="light"] { --bg:#f6f7fb; --panel:#ffffff; --panel-2:#ffffff; --text:#0f172a; --muted:#475569; }
+    * { box-sizing: border-box; }
+    body { font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, sans-serif; margin: 0; background: var(--bg); color: var(--text); }
+    .container { max-width: 980px; margin: 0 auto; padding: 16px; }
+    .header {
+      background: linear-gradient(135deg, #10b981 0%, #16a34a 35%, #0ea5e9 100%);
+      color: #fff; border-bottom-left-radius: 20px; border-bottom-right-radius: 20px;
+      padding: 22px 16px 90px 16px;
+    }
+    .header .top { display: flex; justify-content: flex-end; gap: 8px; }
+    .chip { display:inline-flex; align-items:center; gap:6px; padding:6px 10px; border-radius:10px; background: rgba(255,255,255,.2); backdrop-filter: blur(6px); font-weight:600; }
+    .greeting { font-size: 26px; font-weight: 800; margin-top: 8px; }
+    .subtitle { opacity:.9; margin-top: 6px; }
+    .grid { display:grid; gap:14px; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); margin-top:-60px; padding: 0 16px; }
+    .stat { background: var(--panel); border:1px solid #1f2937; border-radius:14px; padding:14px; }
+    .stat .label { color: var(--muted); font-size: 13px; }
+    .stat .value { font-size: 24px; font-weight: 800; margin-top: 6px; }
+    .actions { display:grid; gap:16px; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); margin: 18px 16px; }
+    .tile { border-radius:16px; padding:18px; color:#fff; border:0; cursor:pointer; text-align:left; transition: transform .08s ease; }
+    .tile:active { transform: scale(.99); }
+    .tile.green { background: linear-gradient(135deg, #16a34a, #22c55e); }
+    .tile.gold { background: linear-gradient(135deg, #f59e0b, #fbbf24); }
+    .tile.teal { background: linear-gradient(135deg, #06b6d4, #0ea5e9); }
+    .tile h3 { margin: 0 0 6px 0; }
+    .tile p { margin: 0; opacity:.95; }
+    .panel { background: var(--panel-2); border:1px solid #1f2937; border-radius:14px; padding:16px; margin: 16px; }
+    .row { display:flex; gap:16px; flex-wrap: wrap; }
+    input[type=file], input[type=text] { width:100%; padding:10px; background: var(--bg); color: var(--text); border:1px solid #1f2937; border-radius:10px; }
+    button.primary { background: var(--accent); border:0; color:#fff; padding:10px 14px; border-radius:10px; cursor:pointer; }
+    img.preview { max-width: 100%; border-radius:12px; border:1px solid #1f2937; }
+    pre { white-space: pre-wrap; word-break: break-word; background: var(--bg); padding: 12px; border-radius: 12px; border: 1px solid #1f2937; }
+    .tabs { position: sticky; bottom: 0; left: 0; right: 0; display:flex; gap: 10px; justify-content: space-around; padding: 10px 12px; background: rgba(15,23,42,.85); backdrop-filter: blur(6px); border-top:1px solid #1f2937; }
+    .tab { color: var(--text); text-decoration: none; font-weight: 600; padding:8px 12px; border-radius: 12px; background: rgba(255,255,255,.04); }
+    .muted { color: var(--muted); }
   </style>
   <script>
+    function setTheme(mode){ document.documentElement.setAttribute('data-theme', mode); localStorage.setItem('kg_theme', mode); }
+    function toggleTheme(){ const cur = localStorage.getItem('kg_theme') || 'dark'; setTheme(cur==='dark'?'light':'dark'); }
+    (function(){ const saved = localStorage.getItem('kg_theme'); if(saved){ setTheme(saved); }})();
     async function predict(endpointId) {
       const fileInput = document.getElementById(endpointId + '-file');
       const resultEl = document.getElementById(endpointId + '-result');
@@ -399,39 +426,83 @@ async def ui_page():
         resultEl.textContent = 'Error: ' + e.message;
       }
     }
+    async function recommendCrop(){
+      const lat = document.getElementById('crop-lat').value.trim();
+      const lon = document.getElementById('crop-lon').value.trim();
+      const out = document.getElementById('crop-result');
+      if(!lat || !lon){ out.textContent = 'Enter latitude and longitude'; return; }
+      try{
+        out.textContent = 'Fetching recommendation...';
+        const res = await fetch('/recommend/crop', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ latitude: parseFloat(lat), longitude: parseFloat(lon) })});
+        if(!res.ok) throw new Error('HTTP ' + res.status);
+        out.textContent = JSON.stringify(await res.json(), null, 2);
+      }catch(e){ out.textContent = 'Error: ' + e.message; }
+    }
   </script>
   </head>
 <body>
-  <h1>Khet Guard ML Inference API</h1>
-  <div style=\"margin-bottom:8px\">Try predictions below or use <a href=\"/docs\">/docs</a>.</div>
+  <div class=\"header\">
+    <div class=\"container\">
+      <div class=\"top\">
+        <span class=\"chip\">EN</span>
+        <button class=\"chip\" onclick=\"toggleTheme()\">☼</button>
+      </div>
+      <div class=\"greeting\">Good morning, Farmer!</div>
+      <div class=\"subtitle\">Location not set</div>
+    </div>
+  </div>
 
-  <div class=\"row\">
-    <div class=\"col\">
-      <div class=\"card\">
+  <div class=\"container\">
+    <div class=\"grid\">
+      <div class=\"stat\"><div class=\"label\">Today's Temp</div><div class=\"value\" id=\"stat-temp\">28°C</div></div>
+      <div class=\"stat\"><div class=\"label\">Humidity</div><div class=\"value\" id=\"stat-hum\">65%</div></div>
+      <div class=\"stat\"><div class=\"label\">Growth %</div><div class=\"value\">87%</div></div>
+      <div class=\"stat\"><div class=\"label\">Health %</div><div class=\"value\">92%</div></div>
+    </div>
+  </div>
+
+  <div class=\"actions\">
+    <button class=\"tile green\" onclick=\"document.getElementById('disease-file').click()\">
+      <h3>Plant Disease Detection</h3>
+      <p>Upload leaf photo to detect diseases</p>
+    </button>
+    <button class=\"tile gold\" onclick=\"document.getElementById('crop-lat').focus()\">
+      <h3>Crop Recommendation</h3>
+      <p>Get personalized crop suggestions</p>
+    </button>
+    <button class=\"tile teal\" onclick=\"document.getElementById('cattle-file').click()\">
+      <h3>Cattle Breed Detection</h3>
+      <p>Identify cattle breeds from photos</p>
+    </button>
+  </div>
+
+  <div class=\"panel\">
+    <div class=\"row\">
+      <div style=\"flex:1 1 320px\"> 
         <h3>Plant Disease/Pest</h3>
-        <input id=\"disease-file\" type=\"file\" accept=\"image/*\">\n
-        <div style=\"margin-top:10px\">\n<button onclick=\"predict('disease')\">Predict Disease/Pest</button></div>
-        <div style=\"margin-top:12px\"><img id=\"disease-preview\" alt=\"preview\"></div>
+        <input id=\"disease-file\" type=\"file\" accept=\"image/*\" onchange=\"predict('disease')\">\n
+        <div style=\"margin-top:12px\"><img class=\"preview\" id=\"disease-preview\" alt=\"preview\"></div>
         <h4>Result</h4>
         <pre id=\"disease-result\"></pre>
       </div>
-    </div>
-
-    <div class=\"col\">
-      <div class=\"card\">
+      <div style=\"flex:1 1 320px\"> 
         <h3>Cattle Breed</h3>
-        <input id=\"cattle-file\" type=\"file\" accept=\"image/*\">\n
-        <div style=\"margin-top:10px\">\n<button onclick=\"predict('cattle')\">Predict Cattle</button></div>
-        <div style=\"margin-top:12px\"><img id=\"cattle-preview\" alt=\"preview\"></div>
+        <input id=\"cattle-file\" type=\"file\" accept=\"image/*\" onchange=\"predict('cattle')\">\n
+        <div style=\"margin-top:12px\"><img class=\"preview\" id=\"cattle-preview\" alt=\"preview\"></div>
         <h4>Result</h4>
         <pre id=\"cattle-result\"></pre>
       </div>
     </div>
   </div>
 
-  <div class=\"card\">
-    <h3>Status</h3>
-    <pre id=\"status\">Loading...</pre>
+  <div class=\"panel\">
+    <h3>Crop Recommendation</h3>
+    <div class=\"row\">
+      <input id=\"crop-lat\" type=\"text\" placeholder=\"Latitude\" style=\"flex:1 1 160px\">
+      <input id=\"crop-lon\" type=\"text\" placeholder=\"Longitude\" style=\"flex:1 1 160px\">
+      <button class=\"primary\" onclick=\"recommendCrop()\">Recommend</button>
+    </div>
+    <pre id=\"crop-result\" class=\"muted\">Enter coordinates and click Recommend</pre>
   </div>
 
   <script>
@@ -440,6 +511,12 @@ async def ui_page():
       catch (e) { document.getElementById('status').textContent = 'Error: ' + e.message; }
     })();
   </script>
+
+  <div class=\"tabs\">
+    <span class=\"tab\">Home</span>
+    <a class=\"tab\" href=\"/docs\">Docs</a>
+    <span class=\"tab\">Profile</span>
+  </div>
 </body>
 </html>
 """
