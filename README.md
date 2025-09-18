@@ -3,10 +3,12 @@
 This is the minimal repository for KHET Guard. Large assets (datasets, model exports, artifacts, logs, and local environments) are intentionally excluded to keep the repository size small.
 
 
+
 <p align="center">
   <img src="https://github.com/user-attachments/assets/a5ec58fc-5a1f-46de-a8ce-6deb63f45fb0" alt="Screenshot 1" width="300"/>
   <img src="https://github.com/user-attachments/assets/b77c2fdf-36b3-44bb-a87c-f547b1a54263" alt="Screenshot 2" width="300"/>
   <img src="https://github.com/user-attachments/assets/71ca8694-210e-4721-aa6c-3fd30c12eb40" alt="Screenshot 3" width="300"/>
+  <img src="https://github.com/user-attachments/assets/6d2d48b7-f321-40a6-a266-84c1aa3b7680" alt="Screenshot 4" width="300"/>
 </p>
 
 ---
