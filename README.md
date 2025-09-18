@@ -1,8 +1,9 @@
 # KHET Guard - Main
 
 This is the minimal repository for KHET Guard. Large assets (datasets, model exports, artifacts, logs, and local environments) are intentionally excluded to keep the repository size small.
-<img width="447" height="948" alt="Screenshot 2025-09-18 132455" src="https://github.com/user-attachments/assets/a5ec58fc-5a1f-46de-a8ce-6deb63f45fb0" /><img width="447" height="944" alt="Screenshot 2025-09-18 132511" src="https://github.com/user-attachments/assets/18b166c0-f0ae-4bcc-bc13-a1160bc64a97" /><img width="449" height="948" alt="Screenshot 2025-09-18 132522" src="https://github.com/user-attachments/assets/b77c2fdf-36b3-44bb-a87c-f547b1a54263" />
-![WhatsApp Image 2025-09-17 at 11 55 27_1a160f97](https://github.com/user-attachments/assets/8f243a9f-8f0a-47dc-899d-35375eb7c14a)<img width="446" height="946" alt="Screenshot 2025-09-18 132741" src="https://github.com/user-attachments/assets/71ca8694-210e-4721-aa6c-3fd30c12eb40" />![Uploading Screenshot 2025-09-18 132729.png…]()
+<img width="447" height="948" alt="Screenshot 2025-09-18 132455" src="https://github.com/user-attachments/assets/a5ec58fc-5a1f-46de-a8ce-6deb63f45fb0" /><img width="447" height="944" alt="Screenshot 2025-09-18 132511" src="https://github.com/user-attachments/assets/18b166c0-f0ae-4bcc-bc13-a1160bc64a97" />
+<img width="449" height="948" alt="Screenshot 2025-09-18 132522" src="https://github.com/user-attachments/assets/b77c2fdf-36b3-44bb-a87c-f547b1a54263" />
+<img width="446" height="946" alt="Screenshot 2025-09-18 132741" src="https://github.com/user-attachments/assets/71ca8694-210e-4721-aa6c-3fd30c12eb40" />![Uploading Screenshot 2025-09-18 132729.png…]()
 
 
 
